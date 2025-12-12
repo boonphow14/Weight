@@ -1,0 +1,29 @@
+<script>
+    // สร้างไฟล์ manifest.json ในรูปแบบของ Blob และใส่ใน Document Head
+    // เนื่องจาก Google Apps Script ไม่อนุญาตให้โฮสต์ไฟล์ JSON แยกกัน
+    const manifest = {
+      "name": "Weight Management App",
+      "short_name": "Weight Management",
+      "start_url": "<?!= ScriptApp.getService().getUrl(); ?>", // ใช้ URL ของ GAS App
+      "display": "standalone", // ทำให้ดูเหมือน Native App (ซ่อน URL bar)
+      "background_color": "#ffffff",
+      "theme_color": "#0d6efd", // สีหลักของ App (ใช้สี primary ของ Bootstrap)
+      "icons": [
+        {
+          "src": "<?!= getBase64Icon(); ?>", // เราจะสร้างฟังก์ชันนี้ใน Code.gs
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    };
+    
+    const stringManifest = JSON.stringify(manifest);
+    const blob = new Blob([stringManifest], { type: 'application/json' });
+    const manifestURL = URL.createObjectURL(blob);
+    
+    // สร้าง link tag และใส่ใน head
+    const manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = manifestURL;
+    document.head.appendChild(manifestLink);
+</script>
